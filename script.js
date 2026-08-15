@@ -231,8 +231,11 @@ function handleSquareClick(event) {
       selectedSquare = null;
       possibleMoves = [];
       currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+
       renderBoard();
+      checkGameOver();
     }
+
     return;
   }
 
@@ -240,6 +243,36 @@ function handleSquareClick(event) {
     selectedSquare = { row, col };
     possibleMoves = getLegalMoves(row, col);
     renderBoard();
+  }
+}
+
+function hasAnyLegalMove(color) { 
+  for (let r = 0; r < 8; r++) { 
+    for (let c = 0; c < 8; c++) { 
+      const piece = boardState[r][c];
+      if (piece && getPieceColor(piece) === color) { 
+        const moves = getLegalMoves(r, c);
+        if (moves.length > 0) { 
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function checkGameOver() { 
+  if(!hasAnyLegalMove(currentPlayer)) { 
+    if(isKingInCheck(currentPlayer)) { 
+      const winner = currentPlayer === 'white' ? 'black' : 'white';
+      setTimeout(() => {
+        alert(`XEQUE-MATE! As ${winner} venceram o jogo!`);
+      }, 100);
+    } else { 
+      setTimeout (() => {
+        alert(`EMPATE por Afogamento (Stalemate)! o jogador nao possui movimentos legais.`);
+      }, 100);
+    }
   }
 }
 
